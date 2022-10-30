@@ -7,7 +7,7 @@
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:padding="@dimen/common_padding_default">
+    >
 
     <ImageView
         android:id="@+id/ivPhoto"

@@ -1,12 +1,17 @@
 package com.example.userssp
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.userssp.databinding.ActivityMainBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnClickListener {
 
     private lateinit var userAdapter: UserAdapter
     private lateinit var linearLayoutManager: RecyclerView.LayoutManager
@@ -17,10 +22,33 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        userAdapter = UserAdapter(getUsers())
+        val preferences = getPreferences(Context.MODE_PRIVATE)
+
+        val isFirstTime = preferences.getBoolean(getString(R.string.sp_first_time), true)
+        Log.i("SP", "${getString(R.string.sp_first_time)} = $isFirstTime")
+        Log.i("SP", "${getString(R.string.sp_username)} = ${preferences.getString(getString(R.string.sp_username), "NA")}")
+
+        if(isFirstTime) {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_register, null)
+            MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.dialog_title)
+                .setView(dialogView)
+                .setCancelable(false)
+                .setPositiveButton(R.string.dialog_confirm) { dialogInterface, i ->
+                    val username = dialogView.findViewById<TextInputEditText>(R.id.etUsername).text.toString()
+                    with(preferences.edit()){
+                        putBoolean(getString(R.string.sp_first_time), false)
+                        putString(getString(R.string.sp_username), username)
+                            .apply()
+                    }
+                }
+                .show()
+        }
+        userAdapter = UserAdapter(getUsers(), this)
         linearLayoutManager = LinearLayoutManager(this)
 
         binding.recyclerView.apply {
+            setHasFixedSize(true)
             layoutManager = linearLayoutManager
             adapter = userAdapter
         }
@@ -77,5 +105,9 @@ class MainActivity : AppCompatActivity() {
         users.add(Yio)
 
         return users
+    }
+
+    override fun onClick(user: User, position: Int) {
+        Toast.makeText(this, "$position: ${user.getFullName()}", Toast.LENGTH_SHORT).show()
     }
 }
