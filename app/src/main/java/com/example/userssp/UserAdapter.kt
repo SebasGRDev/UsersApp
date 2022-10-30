@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.userssp.databinding.ItemUsersAltBinding
 import com.example.userssp.databinding.ItemUsersBinding
 
 class UserAdapter(private val users: List<User>, private val listener: OnClickListener) :
@@ -17,7 +18,7 @@ class UserAdapter(private val users: List<User>, private val listener: OnClickLi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        val view = LayoutInflater.from(context).inflate(R.layout.item_users, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_users_alt, parent, false)
         return ViewHolder(view)
     }
 
@@ -42,7 +43,7 @@ class UserAdapter(private val users: List<User>, private val listener: OnClickLi
     override fun getItemCount(): Int = users.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var binding = ItemUsersBinding.bind(view)
+        var binding = ItemUsersAltBinding.bind(view)
 
         fun setListener(user: User, position: Int){
             binding.root.setOnClickListener { listener.onClick(user, position) }
